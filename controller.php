@@ -10,7 +10,10 @@ function renderView($DBH, $page, $action = NULL, $vars = array())
 {
     if ($page == 'index')
     {
-        $content = 'views/index.php';
+        if (empty($_SESSION['loggued_on_user']))
+            $content = 'views/login.php';
+        else
+            $content = 'views/index.php';
     }
     else if ($page == 'login')
     {
@@ -22,6 +25,7 @@ function renderView($DBH, $page, $action = NULL, $vars = array())
         }
         elseif ($action == 'logout') {
             logout();
+            $content = 'views/login.php';
         } else {
             $content = 'views/login.php';
         }
@@ -38,8 +42,39 @@ function renderView($DBH, $page, $action = NULL, $vars = array())
             setMessage('error', 'You are already logged');
         }
     }
+    else if ($page == 'user_recovery') {
+        if ($action == 'set') {
+            user_recovery($DBH);
+            $content = 'views/index.php';
+        }
+        else {
+            $content = 'views/user_recovery.php';
+        }
+    }
+    else if ($page == 'user_recovery_pwd') {
+        if ($action == 'set') {
+            user_recovery_pwd($DBH);
+            $content = 'views/index.php';
+        }
+        else{
+            $_GET['token'] = !empty($_GET['token']) ? $_GET['token'] : '';
+            $userTokenCheck = findById($DBH, 'USER', 'recovery', $_GET['token']);
+            if (!empty($userTokenCheck)){
+                $content = 'views/user_recovery_pwd.php';
+            }else
+            {
+                $content = 'views/index.php';
+                setMessage('error', 'Your are not allowed to access this resource');
+            }
+        }
+    }
     else
-        $content = 'views/index.php';
+    {
+        if (empty($_SESSION['loggued_on_user']))
+            $content = 'views/login.php';
+        else
+            $content = 'views/index.php';
+    }
 
     return ($content);
 }

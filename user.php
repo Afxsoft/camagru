@@ -19,7 +19,12 @@
 		$user = format_user('add');
 
 		if (empty(insert($DBH, $user, 'USER'))) {
-			setMessage("error", "Account already created or internal error");
+			$userNameCheck  = findById($DBH, 'USER', 'username', $user['username']);
+			$userMailCheck  = findById($DBH, 'USER', 'mail', $user['mail']);
+			if (!empty($userNameCheck[0]))
+				setMessage("error", "Username already used");
+			elseif (!empty($userMailCheck[0]))
+				setMessage("error", "Mail already used");
 			return (false);
 		} else {
 				setMessage("success", "Account successfully created");
@@ -27,6 +32,35 @@
 			return (true);
 		}
 	}
+
+	function user_recovery($DBH){
+
+		$userMailCheck  = findById($DBH, 'USER', 'mail', $_POST['email']);
+		if (!empty($userMailCheck[0]))
+		{
+			$hash = hash('MD5', time() +  rand(-2, 6));
+			if(update($DBH, 'USER', array('recovery' => $hash), 'mail=\''.$_POST['email'].'\''))
+			{
+				sendMail($_POST['email'], 'Mot de passe oublier', "Bonjour,\n merci d'aller a cette adresse pour reinitialiser votre mot de passe http://localhost:8080/camagru/index.php?page=user_recovery_pwd&token=$hash");
+				setMessage("info", 'You will receve a email');
+			}
+		}
+		else
+			setMessage("error", "Incorrect Mail");
+	}
+	function user_recovery_pwd($DBH){
+		$_GET['token'] = !empty($_GET['token']) ? $_GET['token'] : '';
+		$userTokenCheck = findById($DBH, 'USER', 'recovery', $_GET['token']);
+		if (!empty($userTokenCheck) && !empty($_POST['passwd'])){
+			if(update($DBH, 'USER', array('password' => hash('whirlpool', $_POST['passwd']), 'recovery' => NULL), 'recovery=\''.$_GET['token'].'\'')){
+				setMessage('success', 'Password updated');
+			}
+		}else
+		{
+			setMessage('error', 'Error');
+		}
+	}
+
 	function modif_user() {
 		if (check_user_modif() === false) {
 			setMessage("error", "Cannot modify account, wrong informations provided");

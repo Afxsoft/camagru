@@ -19,4 +19,9 @@ function render($templateContent)
 
     include('views/footer.php');
 }
+function renderEncoded($templateContent)
+{
+    include($templateContent);
+}
+
 ?>

@@ -12,9 +12,15 @@
             <span>Mot de passe :</span>
             <input  type="password" name="passwd" required />
         </label>
+
         <label>
             <span>&nbsp;</span>
             <input type="submit" class="button" value="Ok" />
+        </label>
+        <br>
+        <label>
+            <span>&nbsp;</span>
+            <a href="index.php?page=user_recovery" title="Mot de passe oublier">Mot de passe oublier</a>
         </label>
     </form>
 </div>
