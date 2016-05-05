@@ -7,10 +7,13 @@ $currentAction = (!empty($_GET['action'])) ? $_GET['action'] : '';
 if(!file_exists('views/'.$currentPage.'.php'))
 {
     $currentPage = 'index';
+}elseif ($currentPage == 'image')
+{
+    $encoded = true;
 }
 
-$templateContent = renderView($DBH, $currentPage, $currentAction);
 
+$templateContent = renderView($DBH, $currentPage, $currentAction);
 function render($templateContent)
 {
     include('views/header.php');
@@ -19,7 +22,7 @@ function render($templateContent)
 
     include('views/footer.php');
 }
-function renderEncoded($templateContent)
+function renderEncoded($DBH,$templateContent)
 {
     include($templateContent);
 }

@@ -27,6 +27,7 @@
 			$_SESSION['loggued_on_user'] = $_POST['login'];
 			setMessage('success', 'Successfully loggued');
 		}
+		return (true);
 	}
 
 	function logout() {

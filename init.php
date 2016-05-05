@@ -5,10 +5,11 @@
 	include("model.php");
 	include("format.php");
 	include("user.php");
+	include("image.php");
 	include("login.php");
 	include('router.php');
 	if($encoded)
-		renderEncoded($templateContent);
+		renderEncoded($DBH, $templateContent);
 	else
 		render($templateContent);
 ?>

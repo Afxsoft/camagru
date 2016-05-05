@@ -6,7 +6,7 @@
  * @param $vars an array of all value needs in the page
  * @return string
  */
-function renderView($DBH, $page, $action = NULL, $vars = array())
+function renderView($DBH, $page, $action = NULL)
 {
     if ($page == 'index')
     {
@@ -15,9 +15,8 @@ function renderView($DBH, $page, $action = NULL, $vars = array())
         else
             $content = 'views/index.php';
     }
-    else if ($page == 'login')
+    elseif ($page == 'login')
     {
-
         $content = 'views/index.php';
         if ($action == 'post') {
             if (login($DBH) === false)
@@ -26,23 +25,28 @@ function renderView($DBH, $page, $action = NULL, $vars = array())
         elseif ($action == 'logout') {
             logout();
             $content = 'views/login.php';
-        } else {
+        } else
             $content = 'views/login.php';
-        }
+
     }
-    else if ($page == 'user_create') {
+    elseif ($page == 'image')
+    {
+        $content = 'views/image.php';
+
+    }
+    elseif ($page == 'user_create') {
         if ($action == 'set') {
             add_new_user($DBH);
             $content = 'views/index.php';
         }
-        else if (empty($_SESSION['loggued_on_user'])) {
+        elseif (empty($_SESSION['loggued_on_user'])) {
             $content = 'views/user_create.php';
         } else {
             $content = 'views/index.php';
             setMessage('error', 'You are already logged');
         }
     }
-    else if ($page == 'user_recovery') {
+    elseif ($page == 'user_recovery') {
         if ($action == 'set') {
             user_recovery($DBH);
             $content = 'views/index.php';
@@ -51,7 +55,7 @@ function renderView($DBH, $page, $action = NULL, $vars = array())
             $content = 'views/user_recovery.php';
         }
     }
-    else if ($page == 'user_recovery_pwd') {
+    elseif ($page == 'user_recovery_pwd') {
         if ($action == 'set') {
             user_recovery_pwd($DBH);
             $content = 'views/index.php';
@@ -61,8 +65,7 @@ function renderView($DBH, $page, $action = NULL, $vars = array())
             $userTokenCheck = findById($DBH, 'USER', 'recovery', $_GET['token']);
             if (!empty($userTokenCheck)){
                 $content = 'views/user_recovery_pwd.php';
-            }else
-            {
+            } else {
                 $content = 'views/index.php';
                 setMessage('error', 'Your are not allowed to access this resource');
             }
