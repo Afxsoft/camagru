@@ -6,7 +6,7 @@
     <h2>fapfap</h2>
 </div>
 <div class="list_b center">
-    <div id="filter">
+    <div id="filter" style="display: none">
         <input type="radio" name="filter" value="cadre"> <img src="img/tata.png"><br>
         <input type="radio" name="filter" value="tv"> <img src="img/tv.png"><br>
     </div>

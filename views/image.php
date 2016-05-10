@@ -37,7 +37,10 @@ if ($_GET['action'] == 'format' && !empty($_POST['filter']) && !empty($_POST['im
     if(!empty($_POST['filter']) && !empty($_POST['image'])){
         $currentUser  = findById($DBH, 'USER', 'username', $_SESSION['loggued_on_user']);
         header('Content-Type: image/png');
-        imagecreatefromstring(base64_decode(imageMerge($_POST['filter'], $_POST['image'])));
+        $data = base64_decode(str_replace("data:image/png;base64,",'', $_POST['image']));
+        $dest = imagecreatefromstring($data);
+        imagepng($dest);
+        //imagecreatefromstring(base64_decode(imageMerge($_POST['filter'], $_POST['image'])));
         //insert($DBH, array('main' => $_POST['image'], 'filtered' => $_POST['filter']), 'IMAGE');
     }
 }

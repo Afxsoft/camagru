@@ -7,5 +7,9 @@
 </div>
 </div>
 <script src="js/script.js"></script>
+<?php
+if ($currentPage == 'index' && !empty($_SESSION['loggued_on_user'])){?>
+    <script src="js/webcam.js"></script>
+<?php }?>
 </body>
 </html>

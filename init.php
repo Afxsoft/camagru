@@ -11,5 +11,5 @@
 	if($encoded)
 		renderEncoded($DBH, $templateContent);
 	else
-		render($templateContent);
+		render($templateContent, $currentPage);
 ?>
