@@ -71,6 +71,13 @@ function addToBasket($id,$stock){
 //         }
 //     });
 
+function activePhoto($value) {
+    document.getElementById('startbutton').disabled = false;
+    document.getElementById('startUpload').disabled = false;
+    document.getElementById('fileToUpload').disabled = false;
+    document.getElementById('hidenfilter').value =  $value;
+}
+
 function printDiv(divName) {
     var printContents = document.getElementById(divName).innerHTML;
     var originalContents = document.body.innerHTML;

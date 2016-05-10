@@ -14,7 +14,7 @@ if(!file_exists('views/'.$currentPage.'.php'))
 
 
 $templateContent = renderView($DBH, $currentPage, $currentAction);
-function render($templateContent, $currentPage)
+function render($DBH, $templateContent, $currentPage)
 {
     include('views/header.php');
 

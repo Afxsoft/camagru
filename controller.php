@@ -12,7 +12,10 @@ function renderView($DBH, $page, $action = NULL)
     {
         if (empty($_SESSION['loggued_on_user']))
             $content = 'views/login.php';
-        else
+        elseif ($action == 'upload') {
+            uploadImage();
+            $content = 'views/index.php';
+        }else
             $content = 'views/index.php';
     }
     elseif ($page == 'login')

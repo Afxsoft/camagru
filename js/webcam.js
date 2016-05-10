@@ -43,20 +43,51 @@
             streaming = true;
         }
     }, false);
+    function addImage($filter, $image){
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'index.php?page=index&page=image&action=set');
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send('filter=' + encodeURIComponent($filter) + '&image=' + encodeURIComponent($image));
+    }
+    function getRadioVal(form, name) {
+        var val;
+        // get list of radio buttons with specified name
+        var radios = form.elements[name];
+
+        // loop through list of radio buttons
+        for (var i=0, len=radios.length; i<len; i++) {
+            if ( radios[i].checked ) { // radio checked?
+                val = radios[i].value; // if so, hold its value in val
+                break; // and break out of for loop
+            }
+        }
+        return val; // return value of checked radio or undefined if none checked
+    }
+   
 
     function takepicture() {
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext('2d').drawImage(video, 0, 0, width, height);
-        var data = canvas.toDataURL('image/png');
-        document.querySelector('#fapfap').innerHTML += "<img src="+ data+ ">";
-        //photo.setAttribute('src', data);
-        console.log(data);
+
+        var filter = getRadioVal( document.getElementById('filter'), 'filter' );
+        console.log(filter);
+        if(filter != undefined) {
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+            var data = canvas.toDataURL('image/png');
+
+            document.querySelector('#fapfap').innerHTML += "<img src=" + data + ">";
+            addImage(filter, data);
+            //photo.setAttribute('src', data);
+        }
+        else{
+            alert("Please select a filter");
+        }
     }
 
     startbutton.addEventListener('click', function(ev){
         takepicture();
         ev.preventDefault();
     }, false);
+
 
 })();

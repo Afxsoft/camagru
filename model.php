@@ -12,8 +12,8 @@
         return false;
     }
 
-     function fetchAll($DBH, $table, $where = 1, $fields = '*') {
-        $query = "SELECT $fields FROM `" . $table . "` WHERE $where";
+     function fetchAll($DBH, $table, $where = 1, $fields = '*', $orderby = '1 ASC') {
+        $query = "SELECT $fields FROM `" . $table . "` WHERE $where ORDER BY ".$orderby;
         $sql = $DBH->prepare($query);
         $sql->execute();
         $sql->setFetchMode(PDO::FETCH_OBJ);

@@ -6,17 +6,34 @@
     <h2>fapfap</h2>
 </div>
 <div class="list_b center">
-    <div id="filter" style="display: none">
-        <input type="radio" name="filter" value="cadre"> <img src="img/tata.png"><br>
-        <input type="radio" name="filter" value="tv"> <img src="img/tv.png"><br>
-    </div>
+    <form id="filter">
+        <input type="radio" name="filter" value="img/tata.png" onclick="activePhoto('img/tata.png')"> <img src="img/tata.png"><br>
+        <input type="radio" name="filter" value="img/tv.png" onclick="activePhoto('img/tv.png')"> <img src="img/tv.png"><br>
+    </form>
     <video id="video"></video>
-    <button id="startbutton">Prendre une photo</button>
+    <button id="startbutton" disabled>Prendre une photo</button>
     <canvas id="canvas"></canvas>
     <div id="fapfap"></div>
-    <form action="upload.php" method="post" enctype="multipart/form-data">
+    <form action="index.php?page=index&action=upload" method="post" enctype="multipart/form-data">
         Select image to upload:
-        <input type="file" name="fileToUpload" id="fileToUpload">
-        <input type="submit" value="Upload Image" name="submit">
+        <input type="file" name="fileToUpload" id="fileToUpload" disabled>
+        <input type="submit" value="Upload Image" name="submit" id="startUpload" disabled>
+        <input type="hidden" name="filter" value="" id="hidenfilter">
     </form>
+    <aside>
+        <?php
+            $images = getImageByUserId($DBH, getCurrentUserId($DBH));
+            if(!empty(images)){
+                foreach ($images as $image){
+                    foreach ($image as $key => $value){
+                        if($key == 'filtered')
+                        {
+                            echo "<img src='".$value."'>";
+                        }
+                    }
+                }
+            }
+
+        ?>
+    </aside>
 </div>

@@ -127,4 +127,10 @@
 			setMessage("success", "Account successfully deleted");
 		}
 	}
+	function getCurrentUserId($DBH)
+	{
+		$currentUser  = findById($DBH, 'USER', 'username', $_SESSION['loggued_on_user']);
+		$userId = !empty($currentUser[0]->id) ? $currentUser[0]->id : null;
+		return ($userId);
+	}
 ?>
