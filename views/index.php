@@ -28,7 +28,7 @@
                     foreach ($image as $key => $value){
                         if($key == 'filtered')
                         {
-                            echo "<img src='".$value."'>";
+                            echo "<img src='".$value."'> <a href='index.php?page=image&action=del&id=".$image->id."'> Delete me </a>";
                         }
                     }
                 }

@@ -47,7 +47,7 @@
         <div id='cssmenu' class="center">
             <ul>
                 <li><a href='index.php'><span>Home</span></a></li>
-                <li class='active has-sub'><a href='#'><span>Products</span></a>
+                <li class='active has-sub'><a href='index.php?page=galery'><span>Galery</span></a>
                 </li>
                 <li><a href='#'><span>About</span></a></li>
                 <li class='last'><a href='#'><span>Contact</span></a></li>

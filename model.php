@@ -11,9 +11,19 @@
         }
         return false;
     }
+    function countById($DBH,$table, $idSearch, $value_primary) {
+    if (!empty($value_primary)) {
+        $query = "SELECT COUNT(*) as total FROM `" . $table . "` WHERE `" . $idSearch . "`='$value_primary'";
+        $sql = $DBH->prepare($query);
+        $sql->execute();
+        $sql->setFetchMode(PDO::FETCH_OBJ);
+        return $sql->fetchAll();
+    }
+    return false;
+}
 
-     function fetchAll($DBH, $table, $where = 1, $fields = '*', $orderby = '1 ASC') {
-        $query = "SELECT $fields FROM `" . $table . "` WHERE $where ORDER BY ".$orderby;
+     function fetchAll($DBH, $table, $where = 1, $fields = '*', $orderby = '1 ASC' , $limit = '') {
+        $query = "SELECT $fields FROM `" . $table . "` WHERE $where ORDER BY ".$orderby." $limit";
         $sql = $DBH->prepare($query);
         $sql->execute();
         $sql->setFetchMode(PDO::FETCH_OBJ);

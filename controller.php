@@ -13,7 +13,7 @@ function renderView($DBH, $page, $action = NULL)
         if (empty($_SESSION['loggued_on_user']))
             $content = 'views/login.php';
         elseif ($action == 'upload') {
-            uploadImage();
+            uploadImage($DBH);
             $content = 'views/index.php';
         }else
             $content = 'views/index.php';
@@ -35,7 +35,15 @@ function renderView($DBH, $page, $action = NULL)
     }
     elseif ($page == 'image')
     {
-        $content = 'views/image.php';
+        if ($action == 'del') {
+            $imageId = !empty($_GET['id']) ? $_GET['id'] : null;
+            deleteImageById($DBH, $imageId);
+            $content = 'views/index.php';
+
+            header('Location: index.php?action=index');
+        }
+        else
+            $content = 'views/image.php';
 
     }
     elseif ($page == 'user_create') {
@@ -75,6 +83,11 @@ function renderView($DBH, $page, $action = NULL)
                 setMessage('error', 'Your are not allowed to access this resource');
             }
         }
+    }
+    elseif ($page == 'galery') {
+
+            $content = 'views/galery.php';
+
     }
     else
     {

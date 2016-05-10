@@ -21,19 +21,26 @@
         return ('data:image/png;base64,'.base64_encode($imagedata));
     }
 
-    function getAllImage($DBH){
-        return (fetchAll($DBH, 'IMAGE', '1', '*', '3 ASC'));
+    function getAllImage($DBH, $start=0){
+        return (fetchAll($DBH, 'IMAGE', '1', '*', '3 ASC' , 'LIMIT '.$start.', 3'));
     }
 
     function getImageByUserId($DBH, $userId){
         return(findById($DBH, 'IMAGE', 'user', $userId));
     }
-    function uploadImage(){
+    function addImage($DBH, $filter, $image)
+    {
+        $currentUser  = findById($DBH, 'USER', 'username', $_SESSION['loggued_on_user']);
+        $userId = !empty($currentUser[0]->id) ? $currentUser[0]->id : null;
+        $filtered = imageMerge($filter, $image);
+        insert($DBH, array('main' => $image, 'filtered' => $filtered, 'user' => $userId), 'IMAGE');
+    }
+    function uploadImage($DBH){
         $target_dir = "/tmp/";
         $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
         $uploadOk = 1;
         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
-// Check if image file is a actual image or fake image
+        // Check if image file is a actual image or fake image
         if(isset($_POST["submit"])) {
             $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
             if($check !== false) {
@@ -48,21 +55,21 @@
             setMessage('error', "Sorry, file already exists.");
             $uploadOk = 0;
         }
-// Check file size
+        // Check file size
         if ($_FILES["fileToUpload"]["size"] > 500000) {
             setMessage('error', "Sorry, your file is too large.");
             $uploadOk = 0;
         }
-// Allow certain file formats
+        // Allow certain file formats
         if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
             && $imageFileType != "gif" ) {
             setMessage('error', "Sorry, only JPG, JPEG, PNG & GIF files are allowed.");
             $uploadOk = 0;
         }
-// Check if $uploadOk is set to 0 by an error
+        // Check if $uploadOk is set to 0 by an error
         if ($uploadOk == 0) {
             setMessage('error', "Sorry, your file was not uploaded");
-// if everything is ok, try to upload file
+        // if everything is ok, try to upload file
         } else {
             if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
 
@@ -71,18 +78,43 @@
                 $type = pathinfo($path, PATHINFO_EXTENSION);
                 $data = file_get_contents($path);
                 $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-                $data = array('filter' => $_POST['filter'], 'image' => $base64);
 
-                var_dump($)
-//                $handle = curl_init('http://localhost:8080/camagru/index.php?page=image&action=set');
-//                curl_setopt($handle, CURLOPT_POST, true);
-//                curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-//                curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-//
-//                var_dump(curl_exec($handle));
+                addImage($DBH, $_POST['filter'], $base64);
+                unlink($target_file);
 
             } else {
                 setMessage('error', "Sorry, there was an error uploading your file.");
             }
         }
+    }
+    function deleteImageById($DBH, $id){
+        $image = findById($DBH, 'IMAGE', 'id', $id);
+        if(!empty($image[0]->user)){
+            if($image[0]->user == getCurrentUserId($DBH))
+            {
+                delete($DBH, 'image', 'id', $id);
+            }
+        }
+        else
+            setMessage('error', 'Your are not allowed');
+    }
+    function likeImagebyId($DBH, $id)
+    {
+        $imageLike = findById($DBH, 'IMAGE_LIKE', 'image', $id);
+        if(!empty($imageLike[0]->user)){
+            if($imageLike[0]->user == getCurrentUserId($DBH))
+            {
+                delete($DBH, 'image_like', 'user', getCurrentUserId($DBH));
+            }else
+                insert($DBH, array('user' => getCurrentUserId($DBH), 'image' => $id), 'IMAGE_LIKE');
+        }
+        else
+            setMessage('error', 'Your are not allowed');
+    }
+    function countImageLike($DBH, $id){
+        $total = countById($DBH, 'IMAGE_LIKE', 'image', $id);
+        return($total);
+    }
+    function addImageCom($DBH, $id, $msg){
+        insert($DBH, array('main' => $msg, 'user' => getCurrentUserId($DBH), 'image' => $id));
     }
