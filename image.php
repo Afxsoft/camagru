@@ -118,3 +118,6 @@
     function addImageCom($DBH, $id, $msg){
         insert($DBH, array('main' => $msg, 'user' => getCurrentUserId($DBH), 'image' => $id));
     }
+    function getImageComById($DBH, $id, $msg){
+        return(findById($DBH, 'COM', 'image', $id));
+    }
