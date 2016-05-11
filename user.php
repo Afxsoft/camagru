@@ -19,7 +19,7 @@
 		$user = format_user('add');
 
 		if (empty(insert($DBH, $user, 'USER'))) {
-			$userNameCheck  = findById($DBH, 'USER', 'username', $user['username']);
+			$userNameCheck  = findById($DBH, 'USER', 'username', htmlentities($user['username']));
 			$userMailCheck  = findById($DBH, 'USER', 'mail', $user['mail']);
 			if (!empty($userNameCheck[0]))
 				setMessage("error", "Username already used");
@@ -61,76 +61,22 @@
 		}
 	}
 
-	function modif_user() {
-		if (check_user_modif() === false) {
-			setMessage("error", "Cannot modify account, wrong informations provided");
-			return (false);
-		}
-		$user = format_user('modify');
-		$user['login'] = $_SESSION['loggued_on_user'];
-		if ($user['login'] !== $_SESSION['loggued_on_user']) {
-			setMessage("error", "Cannot modify account, wrong informations provided");
-			return (false);
-		}
-		if (db_modif_user($user['login'], $user, 'login') === false) {
-			setMessage("error", "Cannot modify account, wrong informations provided");
-		} else {
-			setMessage("success", "Account successfully modified");
-		}
-	}
-	function modif_user_admin() {
-		if (check_user_modif() === false) {
-			setMessage("error", "Cannot modify account, wrong informations provided");
-			return (false);
-		}
-		$user = format_user('modify');
-		$mdp = db_get_user(array('login' => $user['login']), 'login');
-		if ($mdp === false) {
-			setMessage("error", "Cannot modify account, wrong informations provided");
-			return (false);
-		} else {
-			$user['passwd'] = $mdp['passwd'];
-		}
-		if (db_modif_user($user['login'], $user, 'login') === false) {
-			setMessage("error", "Cannot modify account, wrong informations provided");
-		} else {
-			setMessage("success", "Account successfully modified");
-		}
-	}
-	function delete_user() {
-		if (empty($_POST['login'])) {
-			setMessage("error", "Cannot delete account, wrong informations provided");
-			return (false);
-		}
-		$user = format_user('delete');
-		if ($user['login'] !== $_SESSION['loggued_on_user']) {
-			setMessage("error", "Cannot delete account, wrong informations provided");
-			return (false);
-		}
-		if (db_delete_user($user['login']) === false) {
-			setMessage("error", "Cannot delete account, wrong informations provided");
-			return (false);
-		} else {
-			setMessage("success", "Account successfully deleted");
-			return (true);
-		}
-	}
-	function delete_user_admin() {
-		if (empty($_POST['login'])) {
-			setMessage("error", "Cannot delete account, wrong informations provided");
-			return ;
-		}
-		$user = format_user('delete');
-		if (db_delete_user($user['login']) === false) {
-			setMessage("error", "Cannot delete account, wrong informations provided");
-		} else {
-			setMessage("success", "Account successfully deleted");
-		}
-	}
 	function getCurrentUserId($DBH)
 	{
-		$currentUser  = findById($DBH, 'USER', 'username', $_SESSION['loggued_on_user']);
-		$userId = !empty($currentUser[0]->id) ? $currentUser[0]->id : null;
-		return ($userId);
+		if(userIslog()){
+			$currentUser  = findById($DBH, 'USER', 'username', $_SESSION['loggued_on_user']);
+			$userId = !empty($currentUser[0]->id) ? $currentUser[0]->id : null;
+			return ($userId);
+		}else
+			return (false);
+
+	}
+	function userIslog()
+	{
+		$connect = (!empty($_SESSION['loggued_on_user'])) ? $_SESSION['loggued_on_user'] : null;
+		if ($connect)
+			return (true);
+		else
+			return (false);
 	}
 ?>

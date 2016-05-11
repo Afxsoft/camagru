@@ -16,15 +16,6 @@
                 </div>
                 <div class="right_header">
                     <div class="login">
-                        <span class="profile_icon"></span>
-                        <div>
-                                <span class="top">
-                                    Bonjour
-                                </span>
-                                <span class="bottom">
-                                  <a href="index.php?page=user_account">  Mon compte</a>
-                                </span>
-                        </div>
                     </div>
                     <div class="connect">
                         <?php if(empty($_SESSION['loggued_on_user'])) {?>

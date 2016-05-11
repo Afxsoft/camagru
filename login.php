@@ -2,7 +2,7 @@
 	function auth($DBH, $login, $passwd) {
 		$passwd = hash("whirlpool", $passwd);
 		$data  = findById($DBH, 'USER', 'username', $login);
-		if ($data[0]->username === $login && $data[0]->password === $passwd) {
+		if ($data[0]->username === htmlentities($login) && $data[0]->password === $passwd) {
 			return (true);
 		}
 		return (false);

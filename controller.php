@@ -85,7 +85,18 @@ function renderView($DBH, $page, $action = NULL)
         }
     }
     elseif ($page == 'galery') {
+        if ($action == 'like') {
+            $imageId = !empty($_GET['id']) ? $_GET['id'] : null;
+            likeImagebyId($DBH, $imageId);
+            $content = 'views/galery.php';
+        } elseif ($action == 'add') {
+            $imageId = !empty($_GET['id']) ? $_GET['id'] : null;
+            if(!empty($_POST['com']))
+                addImageCom($DBH, $imageId, $_POST['com']);
 
+            $content = 'views/galery.php';
+        }
+        else
             $content = 'views/galery.php';
 
     }

@@ -28,12 +28,23 @@
     function getImageByUserId($DBH, $userId){
         return(findById($DBH, 'IMAGE', 'user', $userId));
     }
+    function base64_to_jpeg($base64_string, $output_file) {
+        $ifp = fopen($output_file, "wb");
+
+        $data = explode(',', $base64_string);
+
+        fwrite($ifp, base64_decode($data[1]));
+        fclose($ifp);
+
+        return $output_file;
+    }
     function addImage($DBH, $filter, $image)
     {
         $currentUser  = findById($DBH, 'USER', 'username', $_SESSION['loggued_on_user']);
         $userId = !empty($currentUser[0]->id) ? $currentUser[0]->id : null;
         $filtered = imageMerge($filter, $image);
-        insert($DBH, array('main' => $image, 'filtered' => $filtered, 'user' => $userId), 'IMAGE');
+        $image = base64_to_jpeg( $filtered, 'camagru/'.$userId.'_'.time().'.jpg');
+        insert($DBH, array('main' => $image, 'filtered' => $image, 'user' => $userId), 'IMAGE');
     }
     function uploadImage($DBH){
         $target_dir = "/tmp/";
@@ -101,23 +112,54 @@
     function likeImagebyId($DBH, $id)
     {
         $imageLike = findById($DBH, 'IMAGE_LIKE', 'image', $id);
-        if(!empty($imageLike[0]->user)){
-            if($imageLike[0]->user == getCurrentUserId($DBH))
+
+        $checker = 1;
+        if(!empty($imageLike[0])){
+            foreach ($imageLike as $like)
             {
-                delete($DBH, 'image_like', 'user', getCurrentUserId($DBH));
-            }else
+
+                if($like->user == getCurrentUserId($DBH))
+                {
+                    delete($DBH, 'image_like', 'user', getCurrentUserId($DBH));
+                    $checker = 0;
+                }
+            }
+            if ($checker){
                 insert($DBH, array('user' => getCurrentUserId($DBH), 'image' => $id), 'IMAGE_LIKE');
+            }
+        }elseif ($checker){
+            insert($DBH, array('user' => getCurrentUserId($DBH), 'image' => $id), 'IMAGE_LIKE');
         }
-        else
-            setMessage('error', 'Your are not allowed');
+
     }
+    function checkIfLike($DBH, $id)
+    {
+        $imageLike = findById($DBH, 'IMAGE_LIKE', 'image', $id);
+
+        if(!empty($imageLike[0])){
+            foreach ($imageLike as $like)
+            {
+                if($like->user == getCurrentUserId($DBH))
+                    return(true);
+            }
+        }
+
+        return(false);
+    }
+
     function countImageLike($DBH, $id){
         $total = countById($DBH, 'IMAGE_LIKE', 'image', $id);
-        return($total);
+        return($total[0]->total);
     }
     function addImageCom($DBH, $id, $msg){
-        insert($DBH, array('main' => $msg, 'user' => getCurrentUserId($DBH), 'image' => $id));
+        $image = findById($DBH, 'IMAGE', 'id', $id);
+        if(!empty($image)){
+            $user = findById($DBH, 'USER', 'id', $image[0]->user);
+            if(insert($DBH, array('message' => htmlentities($msg), 'user' => getCurrentUserId($DBH), 'image' => $id), 'COM'))
+                sendMail($user[0]->mail, 'Image comm', 'One of your image have recieve a commentaire');
+        }
+
     }
-    function getImageComById($DBH, $id, $msg){
+    function getImageComById($DBH, $id){
         return(findById($DBH, 'COM', 'image', $id));
     }

@@ -758,3 +758,18 @@ p.bjqs-caption{
     .product-image img{
         width: 100%;
     }
+    #filter img{
+        max-width: 150px;
+        display: inline-block;
+    }
+    video{
+        clear: both;
+    }
+    div.left{
+        width: 610px;
+        float: left;
+    }
+    aside{
+        width: 350px;
+        float: left;
+    }

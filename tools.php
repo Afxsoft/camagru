@@ -5,8 +5,7 @@
  * @param $msg
  * @return string
  */
-if (!function_exists('setMessage'))
-{
+
 	function setMessage($type, $msg){
 	    $message = "";
 	    switch ($type)
@@ -23,17 +22,6 @@ if (!function_exists('setMessage'))
 	    }
 	    $_SESSION['MAIN_MESSAGE'] = $message;
 	}
-}
-
-function is_admin() {
-	$data = db_get_user(array('login' => $_SESSION['loggued_on_user']), 'login');
-	if ($data === false)
-		return (false);
-	if (empty($data['admin']) || $data['admin'] !== true) {
-		return (false);
-	}
-	return (true);
-}
 
 /**
  * setSession allows you to set a session from js
@@ -56,12 +44,12 @@ function is_admin() {
 	}
 
 
-function sendMail($to, $subject, $message){
+	function sendMail($to, $subject, $message){
 
-	$headers = 'From: camagru' . "\r\n" .
-		'Reply-To: camagru' . "\r\n" .
-		'X-Mailer: PHP/' . phpversion();
+		$headers = 'From: camagru' . "\r\n" .
+			'Reply-To: camagru' . "\r\n" .
+			'X-Mailer: PHP/' . phpversion();
 
-	mail($to, $subject, $message, $headers);
-}
+		mail($to, $subject, $message, $headers);
+	}
 ?>

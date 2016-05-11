@@ -75,7 +75,7 @@
             canvas.getContext('2d').drawImage(video, 0, 0, width, height);
             var data = canvas.toDataURL('image/png');
 
-            document.querySelector('#fapfap').innerHTML += "<img src=" + data + ">";
+            //document.querySelector('#fapfap').innerHTML += "<img src=" + data + ">";
             addImage(filter, data);
             //photo.setAttribute('src', data);
         }
