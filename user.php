@@ -46,7 +46,8 @@
 			$hash = hash('MD5', time() +  rand(-2, 6));
 			if(update($DBH, 'USER', array('recovery' => $hash), 'mail=\''.$_POST['email'].'\''))
 			{
-				sendMail($_POST['email'], 'Mot de passe oublier', "Bonjour,\n merci d'aller a cette adresse pour reinitialiser votre mot de passe http://localhost:8080/camagru/index.php?page=user_recovery_pwd&token=$hash");
+				$tab = explode('/', $_SERVER['REQUEST_URI']);
+				sendMail($_POST['email'], 'Mot de passe oublier', "Bonjour,\n merci d'aller a cette adresse pour reinitialiser votre mot de passe http://".$_SERVER['HTTP_HOST']."/".$tab[1]."/index.php?page=user_recovery_pwd&token=$hash");
 				setMessage("info", 'You will receve a email');
 			}
 		}
