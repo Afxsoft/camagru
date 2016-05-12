@@ -22,7 +22,7 @@
     }
 
     function getAllImage($DBH, $start=0){
-        return (fetchAll($DBH, 'IMAGE', '1', '*', '3 ASC' , 'LIMIT '.$start.', 3'));
+        return (fetchAll($DBH, 'IMAGE', '1', '*', '4 ASC' , 'LIMIT '.$start.', 3'));
     }
 
     function getImageByUserId($DBH, $userId){
@@ -104,6 +104,7 @@
             if($image[0]->user == getCurrentUserId($DBH))
             {
                 delete($DBH, 'image', 'id', $id);
+                @unlink($image[0]->main);
             }
         }
         else
